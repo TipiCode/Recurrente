@@ -24,12 +24,13 @@
     <Product>Recurrente</Product>
     <AssemblyName>Tipi.Tools.Payments</AssemblyName>
     <RootNamespace>Tipi.Tools.Payments</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Tipi.Tools.HttpRequestHandler" Version="1.0.1" />
+    <PackageReference Include="Tipi.Tools.HttpRequestHandler" Version="1.0.3" />
   </ItemGroup>
 
   <ItemGroup>
