@@ -115,7 +115,7 @@ namespace Tipi.Tools.Payments
                 var response = await requestHandler.ExecuteAsync("POST",
                     $"/users",
                     JsonConvert.SerializeObject(new { email = email, full_name = name }));
-                if (response.StatusCode != HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.Created)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
                 var customer = JsonConvert.DeserializeObject<RecurrenteClient>(response.Body);
@@ -146,7 +146,7 @@ namespace Tipi.Tools.Payments
                 var response = await requestHandler.ExecuteAsync("POST",
                     $"/products",
                     JsonConvert.SerializeObject(new { product = CleanItem(product) }));
-                if (response.StatusCode != HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.Created)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
                 var createdProduct = JsonConvert.DeserializeObject<dynamic>(response.Body);
@@ -182,7 +182,7 @@ namespace Tipi.Tools.Payments
                 var response = await requestHandler.ExecuteAsync("POST",
                     $"/products",
                     JsonConvert.SerializeObject(new { product = CleanItem(subscription) }));
-                if (response.StatusCode != HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.Created)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
                 var createdSubscription = JsonConvert.DeserializeObject<dynamic>(response.Body);
@@ -193,6 +193,34 @@ namespace Tipi.Tools.Payments
                 subscription.StoreUrl = createdSubscription.storefront_link;
                 subscription.Status = createdSubscription.status;
                 return subscription;
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException("An error ocurred creating the client", e);
+            }
+        }
+        /// <summary>
+        /// Deletes a product or subscription, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#delete-item-async">See More</see>.
+        /// </summary>
+        /// <remarks>
+        /// Deletes either a <c>Subscription</c> or a <c>Product</c>.
+        /// </remarks>
+        /// <param name="id">Id of the item you intend to delete</param>
+        /// <returns>
+        /// True if the object was correctly deleted
+        /// </returns>
+        public async Task<bool> DeleteItemAsync(string id)
+        {
+            try
+            {
+                using var requestHandler = new HttpRequestHandler(_headers);
+                var response = await requestHandler.ExecuteAsync("DELETE",
+                    $"/products/{id}");
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
+
+                return true;
             }
             catch (Exception e)
             {

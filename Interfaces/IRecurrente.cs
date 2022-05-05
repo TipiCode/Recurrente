@@ -73,5 +73,17 @@ namespace Tipi.Tools.Payments.Interfaces
         /// Object of type <c>Subscription</c> with the properties Id, Status and Storefront Link filled.
         /// </returns>
         Task<Subscription> CreateSubscriptionAsync(Subscription subscription);
+        /// <summary>
+        /// Deletes a product or subscription, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#delete-item-async">See More</see>.
+        /// </summary>
+        /// <remarks>
+        /// Deletes either a <c>Subscription</c> or a <c>Product</c>.
+        /// </remarks>
+        /// <param name="id">Id of the item you intend to delete</param>
+        /// <returns>
+        /// True if the object was correctly deleted
+        /// </returns>
+        Task<bool> DeleteItemAsync(string id);
     }
 }
