@@ -25,7 +25,7 @@ namespace Tipi.Tools.Payments.Interfaces
         /// </returns>
         Task<string> CreateClientAsync(string name, string email);
         /// <summary>
-        /// This method creates a new Checkout taking the clientId and the PriceId of a product, 
+        /// This method creates a new Checkout, 
         /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#create-checkout-async">See More</see>.
         /// </summary>
         /// <remarks>
@@ -37,5 +37,17 @@ namespace Tipi.Tools.Payments.Interfaces
         /// Returns an <c>Checkout</c> containing the Checkout URL and Checkout Id.
         /// </returns>
         Task<Checkout> CreateCheckoutAsync(string client_id, string price_id);
+        /// <summary>
+        /// This method creates a new Checkout, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#create-checkout-async">See More</see>.
+        /// </summary>
+        /// <remarks>
+        /// Creates a new Checkout and returns its Checkout URL.
+        /// </remarks>
+        /// <param name="price_id">Price Id of the product you want to bill.</param>
+        /// <returns>
+        /// Returns an <c>Checkout</c> containing the Checkout URL and Checkout Id.
+        /// </returns>
+        Task<Checkout> CreateCheckoutAsync(string price_id);
     }
 }

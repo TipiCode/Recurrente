@@ -30,7 +30,7 @@ namespace Tipi.Tools.Payments
             _headers.Add("X-SECRET-KEY", options.SecretKey);
         }
         /// <summary>
-        /// This method creates a new Checkout taking the clientId and the PriceId of a product, 
+        /// This method creates a new Checkout, 
         /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#create-checkout-async">See More</see>.
         /// </summary>
         /// <remarks>
@@ -54,6 +54,38 @@ namespace Tipi.Tools.Payments
 
                 var checkout = JsonConvert.DeserializeObject<RecurrenteCheckout>(response.Body);
                 if(checkout == null)
+                    throw new NullReferenceException("The Checkout Response is null.");
+                return new Checkout(checkout.id, checkout.checkout_url);
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException("An error ocurred creating the checkout", e);
+            }
+        }
+        /// <summary>
+        /// This method creates a new Checkout, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#create-checkout-async">See More</see>.
+        /// </summary>
+        /// <remarks>
+        /// Creates a new Checkout and returns its Checkout URL.
+        /// </remarks>
+        /// <param name="price_id">Price Id of the product you want to bill.</param>
+        /// <returns>
+        /// Returns an <c>Checkout</c> containing the Checkout URL and Checkout Id.
+        /// </returns>
+        public async Task<Checkout> CreateCheckoutAsync(string price_id)
+        {
+            try
+            {
+                using var requestHandler = new HttpRequestHandler(_headers);
+                var response = await requestHandler.ExecuteAsync("POST",
+                    $"/checkouts",
+                    JsonConvert.SerializeObject(new { items = new List<dynamic>() { new { price_id = price_id } } }));
+                if (response.StatusCode != HttpStatusCode.Created)
+                    throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
+
+                var checkout = JsonConvert.DeserializeObject<RecurrenteCheckout>(response.Body);
+                if (checkout == null)
                     throw new NullReferenceException("The Checkout Response is null.");
                 return new Checkout(checkout.id, checkout.checkout_url);
             }
