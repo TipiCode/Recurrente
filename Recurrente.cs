@@ -4,6 +4,7 @@ using Tipi.Tools.Http;
 using Newtonsoft.Json;
 using System.Net;
 using Tipi.Tools.Payments.Dto;
+using Tipi.Tools.Payments.Models;
 
 namespace Tipi.Tools.Payments
 {
@@ -38,9 +39,9 @@ namespace Tipi.Tools.Payments
         /// <param name="client_id">Client Id of the client you want to bill.</param>
         /// <param name="price_id">Price Id of the product you want to bill.</param>
         /// <returns>
-        /// Returns an <c>String</c> containing the Checkout URL.
+        /// Returns an <c>Checkout</c> containing the Checkout URL and Checkout Id.
         /// </returns>
-        public async Task<string> CreateCheckoutAsync(string client_id, string price_id)
+        public async Task<Checkout> CreateCheckoutAsync(string client_id, string price_id)
         {
             try
             {
@@ -52,7 +53,9 @@ namespace Tipi.Tools.Payments
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
                 var checkout = JsonConvert.DeserializeObject<RecurrenteCheckout>(response.Body);
-                return checkout == null ? "" : checkout.checkout_url;
+                if(checkout == null)
+                    throw new NullReferenceException("The Checkout Response is null.");
+                return new Checkout(checkout.id, checkout.checkout_url);
             }
             catch (Exception e)
             {

@@ -1,4 +1,6 @@
-﻿namespace Tipi.Tools.Payments.Interfaces
+﻿using Tipi.Tools.Payments.Models;
+
+namespace Tipi.Tools.Payments.Interfaces
 {
     /// <summary>
     /// Interface <c>IRecurrente</c> serves as an interace to implement the Class <c>Recurrente</c>,
@@ -32,8 +34,8 @@
         /// <param name="client_id">Client Id of the client you want to bill.</param>
         /// <param name="price_id">Price Id of the product you want to bill.</param>
         /// <returns>
-        /// Returns an <c>String</c> containing the Checkout URL.
+        /// Returns an <c>Checkout</c> containing the Checkout URL and Checkout Id.
         /// </returns>
-        Task<string> CreateCheckoutAsync(string client_id, string price_id);
+        Task<Checkout> CreateCheckoutAsync(string client_id, string price_id);
     }
 }
