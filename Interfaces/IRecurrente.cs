@@ -49,5 +49,17 @@ namespace Tipi.Tools.Payments.Interfaces
         /// Returns an <c>Checkout</c> containing the Checkout URL and Checkout Id.
         /// </returns>
         Task<Checkout> CreateCheckoutAsync(string price_id);
+        /// <summary>
+        /// This method creates a new product taking by parameter an object of type <c>Product</c> representing the object you want to create, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#create-product-async">See More</see>.
+        /// </summary>
+        /// <remarks>
+        /// Creates a new Product and returns a <c>Product</c> object with the properties Id, Status and Storefront Link filled.
+        /// </remarks>
+        /// <param name="product">Object of type <c>Product</c> representing the object you want to create</param>
+        /// <returns>
+        /// Object of type <c>Product</c> with the properties Id, Status and Storefront Link filled.
+        /// </returns>
+        Task<Product> CreateProductAsync(Product product);
     }
 }
