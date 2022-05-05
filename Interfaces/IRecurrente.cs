@@ -1,4 +1,4 @@
-﻿namespace Tipi.Tools.Interfaces
+﻿namespace Tipi.Tools.Payments.Interfaces
 {
     public interface IRecurrente
     {

@@ -1,4 +1,4 @@
-﻿namespace Recurrente.Models
+﻿namespace Tipi.Tools.Payments.Models
 {
     public class RecurrenteClient
     {

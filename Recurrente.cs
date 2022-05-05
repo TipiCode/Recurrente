@@ -1,11 +1,11 @@
-﻿using Recurrente.Config;
-using Tipi.Tools.Interfaces;
+﻿using Tipi.Tools.Payments.Config;
+using Tipi.Tools.Payments.Interfaces;
 using HttpRequestHandler.Utils;
 using Newtonsoft.Json;
 using System.Net;
-using Recurrente.Models;
+using Tipi.Tools.Payments.Models;
 
-namespace Tipi.Tools
+namespace Tipi.Tools.Payments
 {
     internal class Recurrente : IRecurrente
     {

@@ -1,4 +1,4 @@
-﻿namespace Recurrente.Config
+﻿namespace Tipi.Tools.Payments.Config
 {
     internal class Constants
     {

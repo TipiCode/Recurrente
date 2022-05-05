@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Tipi.Tools.Interfaces;
+using Tipi.Tools.Payments.Interfaces;
 
-namespace Recurrente.Config
+namespace Tipi.Tools.Payments.Config
 {
     public static class ServiceRegistration
     {
-        public static void ConfigureRecurrente(this IServiceCollection services, string pKey, string sKey)
+        public static void ConfigureRecurrentePaymentGateway(this IServiceCollection services, string pKey, string sKey)
         {
             var authManager = new RecurrenteOptions(pKey, sKey);
             services.AddSingleton(authManager);
-            services.AddTransient<IRecurrente, Tipi.Tools.Recurrente>();
+            services.AddTransient<IRecurrente, Recurrente>();
         }
     }
 }
