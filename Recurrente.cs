@@ -145,7 +145,7 @@ namespace Tipi.Tools.Payments
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("POST",
                     $"/products",
-                    JsonConvert.SerializeObject(new { product = CleanProduct(product) }));
+                    JsonConvert.SerializeObject(new { product = CleanItem(product) }));
                 if (response.StatusCode != HttpStatusCode.OK)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
@@ -163,26 +163,93 @@ namespace Tipi.Tools.Payments
                 throw new ApplicationException("An error ocurred creating the client", e);
             }
         }
+        /// <summary>
+        /// This method creates a new recurring product taking by parameter an object of type <c>Subscription</c> representing the object you want to create, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#create-subscription-async">See More</see>.
+        /// </summary>
+        /// <remarks>
+        /// Creates a new Product and returns a <c>Subscription</c> object with the properties Id, Status and Storefront Link filled.
+        /// </remarks>
+        /// <param name="subscription">Object of type <c>Subscription</c> representing the object you want to create</param>
+        /// <returns>
+        /// Object of type <c>Subscription</c> with the properties Id, Status and Storefront Link filled.
+        /// </returns>
+        public async Task<Subscription> CreateSubscriptionAsync(Subscription subscription)
+        {
+            try
+            {
+                using var requestHandler = new HttpRequestHandler(_headers);
+                var response = await requestHandler.ExecuteAsync("POST",
+                    $"/products",
+                    JsonConvert.SerializeObject(new { product = CleanItem(subscription) }));
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
-        private dynamic CleanProduct(Product product)
+                var createdSubscription = JsonConvert.DeserializeObject<dynamic>(response.Body);
+                if (createdSubscription == null)
+                    throw new NullReferenceException("API Call returnes a null Body.");
+                subscription.Id = createdSubscription.id;
+                subscription.Price.Id = createdSubscription.prices[0].id;
+                subscription.StoreUrl = createdSubscription.storefront_link;
+                subscription.Status = createdSubscription.status;
+                return subscription;
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException("An error ocurred creating the client", e);
+            }
+        }
+
+        private dynamic CleanItem(Product item)
         {
             var newProduct = new
             {
-                name = product.Name,
-                description = product.Description,
-                phone_requirement = Enum.GetName(typeof(Requirements), product.PhoneRequirement) ?.ToLower(),
-                address_requirement = Enum.GetName(typeof(Requirements), product.AddressRequirement) ?.ToLower(),
-                billing_info_requirement = Enum.GetName(typeof(Requirements), product.BillingInfoRequirement) ?.ToLower(),
-                image_url = product.Image,
-                cancel_url = product.CancelUrl,
-                cancelsuccess_url_url = product.SuccessUrl,
+                name = item.Name,
+                description = item.Description,
+                phone_requirement = Enum.GetName(typeof(Requirements), item.PhoneRequirement) ?.ToLower(),
+                address_requirement = Enum.GetName(typeof(Requirements), item.AddressRequirement) ?.ToLower(),
+                billing_info_requirement = Enum.GetName(typeof(Requirements), item.BillingInfoRequirement) ?.ToLower(),
+                image_url = item.Image,
+                cancel_url = item.CancelUrl,
+                cancelsuccess_url_url = item.SuccessUrl,
                 prices_attributes = new List<dynamic>()
                     {
                         new
                         {
-                            amount_as_decimal = product.Price.Amount.ToString(),
-                            currency = Enum.GetName(typeof(Currency), product.Price.Currency),
+                            amount_as_decimal = item.Price.Amount.ToString(),
+                            currency = Enum.GetName(typeof(Currency), item.Price.Currency),
                             charge_type = "one_time"
+                        }
+                    }
+            };
+
+            return newProduct;
+        }
+
+        private dynamic CleanItem(Subscription item)
+        {
+            var newProduct = new
+            {
+                name = item.Name,
+                description = item.Description,
+                phone_requirement = Enum.GetName(typeof(Requirements), item.PhoneRequirement)?.ToLower(),
+                address_requirement = Enum.GetName(typeof(Requirements), item.AddressRequirement)?.ToLower(),
+                billing_info_requirement = Enum.GetName(typeof(Requirements), item.BillingInfoRequirement)?.ToLower(),
+                image_url = item.Image,
+                cancel_url = item.CancelUrl,
+                cancelsuccess_url_url = item.SuccessUrl,
+                prices_attributes = new List<dynamic>()
+                    {
+                        new
+                        {
+                            amount_as_decimal = item.Price.Amount.ToString(),
+                            currency = Enum.GetName(typeof(Currency), item.Price.Currency),
+                            charge_type = "recurring",
+                            billing_interval_count = item.Price.IntervalCount.ToString(),
+                            billing_interval = Enum.GetName(typeof(BillingInterval), item.Price.Interval)?.ToLower(),
+                            free_trial_interval_count = item.Price.FreeTrialIntervalCount.ToString(),
+                            free_trial_interval = Enum.GetName(typeof(BillingInterval), item.Price.FreeTrialInterval)?.ToLower(),
+                            periods_before_automatic_cancellation = item.Price.CancellationInterval
                         }
                     }
             };
