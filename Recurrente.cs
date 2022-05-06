@@ -46,6 +46,10 @@ namespace Tipi.Tools.Payments
         {
             try
             {
+                if (string.IsNullOrEmpty(client_id))
+                    throw new ArgumentNullException("The Client Id cannot be null or empty.");
+                if (string.IsNullOrEmpty(price_id))
+                    throw new ArgumentNullException("The price Id cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("POST",
                     $"/checkouts",
@@ -78,6 +82,8 @@ namespace Tipi.Tools.Payments
         {
             try
             {
+                if (string.IsNullOrEmpty(price_id))
+                    throw new ArgumentNullException("The price Id cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("POST",
                     $"/checkouts",
@@ -111,6 +117,10 @@ namespace Tipi.Tools.Payments
         {
             try
             {
+                if (string.IsNullOrEmpty(name))
+                    throw new ArgumentNullException("The client name cannot be null or empty.");
+                if (string.IsNullOrEmpty(email))
+                    throw new ArgumentNullException("The client email cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("POST",
                     $"/users",
@@ -142,6 +152,8 @@ namespace Tipi.Tools.Payments
         {
             try
             {
+                if (product == null)
+                    throw new ArgumentNullException("The Product cannot be null.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("POST",
                     $"/products",
@@ -178,6 +190,8 @@ namespace Tipi.Tools.Payments
         {
             try
             {
+                if (subscription ==  null)
+                    throw new ArgumentNullException("The Subscription cannot be null.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("POST",
                     $"/products",
@@ -214,6 +228,8 @@ namespace Tipi.Tools.Payments
         {
             try
             {
+                if (string.IsNullOrEmpty(id))
+                    throw new ArgumentNullException("The Item Id cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("DELETE",
                     $"/products/{id}");
@@ -228,6 +244,40 @@ namespace Tipi.Tools.Payments
             }
         }
         /// <summary>
+        /// This method Gets an existing checkout, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#get-checkout-async">See More</see>.
+        /// </summary>
+        /// <remarks>
+        /// Gets a checkout by its Id.
+        /// </remarks>
+        /// <param name="checkoutId">Checkout Id.</param>
+        /// <returns>
+        /// Returns an <c>Checkout</c> containing the Checkout URL and Checkout Id.
+        /// </returns>
+        public async Task<Checkout> GetCheckoutAsync(string checkoutId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(checkoutId))
+                    throw new ArgumentNullException("The checkout Id cannot be null or empty.");
+                using var requestHandler = new HttpRequestHandler(_headers);
+                var response = await requestHandler.ExecuteAsync("GET",
+                    $"/checkouts/{checkoutId}");
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
+
+                var checkout = JsonConvert.DeserializeObject<RecurrenteCheckout>(response.Body);
+                if (checkout == null)
+                    throw new NullReferenceException("The Checkout Response is null.");
+                return new Checkout(checkout.id, checkout.checkout_url);
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException("An error ocurred creating the checkout", e);
+            }
+        }
+
+        /// <summary>
         /// This method gets a product by its Id, 
         /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#get-product-async">See More</see>.
         /// </summary>
@@ -239,6 +289,8 @@ namespace Tipi.Tools.Payments
         {
             try
             {
+                if (string.IsNullOrEmpty(productId))
+                    throw new ArgumentNullException("The Product Id cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("GET",
                     $"/products/{productId}");
