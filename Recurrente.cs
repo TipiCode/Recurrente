@@ -227,6 +227,58 @@ namespace Tipi.Tools.Payments
                 throw new ApplicationException("An error ocurred creating the client", e);
             }
         }
+        /// <summary>
+        /// This method gets a product by its Id, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#get-product-async">See More</see>.
+        /// </summary>
+        /// <param name="productId">Id of the product you want to search</param>
+        /// <returns>
+        /// Object of type <c>Product</c>.
+        /// </returns>
+        public async Task<Product> GetProductAsync(string productId)
+        {
+            try
+            {
+                using var requestHandler = new HttpRequestHandler(_headers);
+                var response = await requestHandler.ExecuteAsync("GET",
+                    $"/products/{productId}");
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
+
+                var product = JsonConvert.DeserializeObject<dynamic>(response.Body);
+                if (product == null)
+                    throw new NullReferenceException("API Call returnes a null Body.");
+
+                return BuildProduct(product);
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException("An error ocurred creating the client", e);
+            }
+        }
+
+        private Product BuildProduct(dynamic response)
+        {
+            return new Product(
+                new SinglePrice()
+                {
+                    Id = response.prices[0].id,
+                    Amount = double.Parse(response.prices[0].amount_in_cents),
+                    Currency = Enum.Parse(typeof(Currency), response.prices[0].currency)
+                })
+            {
+                Id = response.id,
+                Name = response.Name,
+                Description = response.description.body,
+                PhoneRequirement = Enum.Parse(typeof(Requirements), response.phone_requirement),
+                AddressRequirement = Enum.Parse(typeof(Requirements), response.address_requirement),
+                BillingInfoRequirement = Enum.Parse(typeof(Requirements), response.billing_info_requirement),
+                Status = response.status,
+                CancelUrl = response.cancel_url,
+                SuccessUrl = response.success_url,
+                StoreUrl = response.storefront_link
+            };
+        }
 
         private dynamic CleanItem(Product item)
         {

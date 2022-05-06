@@ -62,6 +62,15 @@ namespace Tipi.Tools.Payments.Interfaces
         /// </returns>
         Task<Product> CreateProductAsync(Product product);
         /// <summary>
+        /// This method gets a product by its Id, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#get-product-async">See More</see>.
+        /// </summary>
+        /// <param name="productId">Id of the product you want to search</param>
+        /// <returns>
+        /// Object of type <c>Product</c>.
+        /// </returns>
+        Task<Product> GetProductAsync(string productId);
+        /// <summary>
         /// This method creates a new recurring product taking by parameter an object of type <c>Subscription</c> representing the object you want to create, 
         /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#create-subscription-async">See More</see>.
         /// </summary>
