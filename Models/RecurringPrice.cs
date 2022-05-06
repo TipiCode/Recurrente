@@ -12,17 +12,17 @@ namespace Tipi.Tools.Payments.Models
         /// <summary>Price Amount in Decimal factor. </summary>
         public float Amount { get; set; }
         /// <summary>Currency type.</summary>
-        public Currency Currency { get; set; }
+        public Currency Currency { get; set; } = default!;
         /// <summary>Billing interval type.</summary>
-        public BillingInterval Interval { get; set; }
+        public BillingInterval Interval { get; set; } = default!;
         /// <summary>Number of interval to count before billing.</summary>
-        public int IntervalCount { get; set; }
+        public int IntervalCount { get; set; } = default!;
         /// <summary>Free tial Billing interval type.</summary>
         public BillingInterval FreeTrialInterval { get; private set; }
         /// <summary>Number of interval to count before finishing the free trial.</summary>
         public int FreeTrialIntervalCount { get; private set; }
         /// <summary>Automatic Cancellation periods.</summary>
-        public int CancellationInterval { get; set; }
+        public int CancellationInterval { get; set; } = default!;
         /// <summary>
         /// Add a free trial period to the new <c>Subscription</c>, 
         /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/classes#single-price">See More</see>.

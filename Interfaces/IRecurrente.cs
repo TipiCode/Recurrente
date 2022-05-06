@@ -95,6 +95,15 @@ namespace Tipi.Tools.Payments.Interfaces
         /// </returns>
         Task<Subscription> CreateSubscriptionAsync(Subscription subscription);
         /// <summary>
+        /// This method gets a Subscription by its Id, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#get-subscription-async">See More</see>.
+        /// </summary>
+        /// <param name="subscriptionId">Id of the subscription you want to search</param>
+        /// <returns>
+        /// Object of type <c>Subscription</c>.
+        /// </returns>
+        Task<Subscription> GetSubscriptionAsync(string subscriptionId);
+        /// <summary>
         /// Deletes a product or subscription, 
         /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#delete-item-async">See More</see>.
         /// </summary>
@@ -106,5 +115,17 @@ namespace Tipi.Tools.Payments.Interfaces
         /// True if the object was correctly deleted
         /// </returns>
         Task<bool> DeleteItemAsync(string id);
+        /// <summary>
+        /// Gets the information about an active subscription, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#get-active-subscription-async">See More</see>.
+        /// </summary>
+        /// <remarks>
+        /// Gets the information about an active subscription.
+        /// </remarks>
+        /// <param name="activeId">Id of the active subscription you want to retrieve</param>
+        /// <returns>
+        /// <c>ActiveSubscription</c> object containing the information of your subscription
+        /// </returns>
+        Task<ActiveSubscription> GetActiveSubscriptionAsync(string activeId);
     }
 }

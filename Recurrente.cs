@@ -244,6 +244,49 @@ namespace Tipi.Tools.Payments
             }
         }
         /// <summary>
+        /// Gets the information about an active subscription, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#get-active-subscription-async">See More</see>.
+        /// </summary>
+        /// <remarks>
+        /// Gets the information about an active subscription.
+        /// </remarks>
+        /// <param name="activeId">Id of the active subscription you want to retrieve</param>
+        /// <returns>
+        /// <c>ActiveSubscription</c> object containing the information of your subscription
+        /// </returns>
+        public async Task<ActiveSubscription> GetActiveSubscriptionAsync(string activeId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(activeId))
+                    throw new ArgumentNullException("The Item Id cannot be null or empty.");
+                using var requestHandler = new HttpRequestHandler(_headers);
+                var response = await requestHandler.ExecuteAsync("DELETE",
+                    $"/subscriptions/{activeId}");
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
+
+                var activeSubscription = JsonConvert.DeserializeObject<dynamic>(response.Body);
+                if (activeSubscription == null)
+                    throw new NullReferenceException("The Checkout Response is null.");
+                return new ActiveSubscription()
+                {
+                    Id = activeSubscription.id,
+                    Status = activeSubscription.status,
+                    Started = new DateTime(activeSubscription.current_period_start),
+                    NextBilling = new DateTime(activeSubscription.current_period_end),
+                    UserId = activeSubscription.subscriber.id,
+                    Email = activeSubscription.subscriber.email,
+                    ProductId = activeSubscription.product.id,
+                };
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException("An error ocurred creating the client", e);
+            }
+        }
+
+        /// <summary>
         /// This method Gets an existing checkout, 
         /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#get-checkout-async">See More</see>.
         /// </summary>
@@ -308,6 +351,37 @@ namespace Tipi.Tools.Payments
                 throw new ApplicationException("An error ocurred creating the client", e);
             }
         }
+        /// <summary>
+        /// This method gets a Subscription by its Id, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#get-subscription-async">See More</see>.
+        /// </summary>
+        /// <param name="subscriptionId">Id of the subscription you want to search</param>
+        /// <returns>
+        /// Object of type <c>Subscription</c>.
+        /// </returns>
+        public async Task<Subscription> GetSubscriptionAsync(string subscriptionId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(subscriptionId))
+                    throw new ArgumentNullException("The Subscription Id cannot be null or empty.");
+                using var requestHandler = new HttpRequestHandler(_headers);
+                var response = await requestHandler.ExecuteAsync("GET",
+                    $"/products/{subscriptionId}");
+                if (response.StatusCode != HttpStatusCode.OK)
+                    throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
+
+                var product = JsonConvert.DeserializeObject<dynamic>(response.Body);
+                if (product == null)
+                    throw new NullReferenceException("API Call returnes a null Body.");
+
+                return BuildProduct(product);
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException("An error ocurred creating the client", e);
+            }
+        }
 
         private Product BuildProduct(dynamic response)
         {
@@ -317,6 +391,32 @@ namespace Tipi.Tools.Payments
                     Id = response.prices[0].id,
                     Amount = double.Parse(response.prices[0].amount_in_cents),
                     Currency = Enum.Parse(typeof(Currency), response.prices[0].currency)
+                })
+            {
+                Id = response.id,
+                Name = response.Name,
+                Description = response.description.body,
+                PhoneRequirement = Enum.Parse(typeof(Requirements), response.phone_requirement),
+                AddressRequirement = Enum.Parse(typeof(Requirements), response.address_requirement),
+                BillingInfoRequirement = Enum.Parse(typeof(Requirements), response.billing_info_requirement),
+                Status = response.status,
+                CancelUrl = response.cancel_url,
+                SuccessUrl = response.success_url,
+                StoreUrl = response.storefront_link
+            };
+        }
+
+        private Subscription BuildSubscription(dynamic response)
+        {
+            return new Subscription(
+                new RecurringPrice()
+                {
+                    Id = response.prices[0].id,
+                    Amount = double.Parse(response.prices[0].amount_in_cents),
+                    Currency = Enum.Parse(typeof(Currency), response.prices[0].currency),
+                    Interval = Enum.Parse(typeof(BillingInterval), response.prices[0].billing_interval, true),
+                    IntervalCount = response.prices[0].billing_interval_count,
+                    CancellationInterval = response.prices[0].periods_before_automatic_cancellation
                 })
             {
                 Id = response.id,

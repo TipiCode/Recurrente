@@ -14,11 +14,7 @@ namespace Tipi.Tools.Payments.Models
         /// <summary>
         /// Constructor to initialize the <c>Subscription</c> object.
         /// </summary>
-        public Subscription(string name, string? description, Requirements phoneRequirement,
-            Requirements addressRequirement, Requirements billingInfoRequirements, string image,
-            string cancelUrl, string successUrl, RecurringPrice price)
-            : base(name, description, phoneRequirement, addressRequirement,
-                  billingInfoRequirements, image, cancelUrl, successUrl)
+        public Subscription(RecurringPrice price)
         {
             Price = price;
         }
