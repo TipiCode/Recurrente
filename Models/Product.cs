@@ -10,7 +10,7 @@ namespace Tipi.Tools.Payments.Models
     public class Product : BaseItem
     {
         /// <summary>Object containing the Price information</summary>
-        public SinglePrice Price { get; }
+        public SinglePrice Price { get; } 
         /// <summary>
         /// Constructor to initialize the <c>Product</c> object.
         /// </summary>

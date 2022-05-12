@@ -52,7 +52,7 @@ namespace Tipi.Tools.Payments
                     throw new ArgumentNullException("The price Id cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("POST",
-                    $"/checkouts",
+                    $"{Constants.ApiEndpoint}/checkouts",
                     JsonConvert.SerializeObject(new { items = new List<dynamic>() { new { price_id = price_id } }, user_id = client_id }));
                 if (response.StatusCode != HttpStatusCode.Created)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
@@ -86,7 +86,7 @@ namespace Tipi.Tools.Payments
                     throw new ArgumentNullException("The price Id cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("POST",
-                    $"/checkouts",
+                    $"{Constants.ApiEndpoint}/checkouts",
                     JsonConvert.SerializeObject(new { items = new List<dynamic>() { new { price_id = price_id } } }));
                 if (response.StatusCode != HttpStatusCode.Created)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
@@ -123,9 +123,9 @@ namespace Tipi.Tools.Payments
                     throw new ArgumentNullException("The client email cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("POST",
-                    $"/users",
+                    $"{Constants.ApiEndpoint}/users",
                     JsonConvert.SerializeObject(new { email = email, full_name = name }));
-                if (response.StatusCode != HttpStatusCode.Created)
+                if (response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
                 var customer = JsonConvert.DeserializeObject<RecurrenteClient>(response.Body);
@@ -156,7 +156,7 @@ namespace Tipi.Tools.Payments
                     throw new ArgumentNullException("The Product cannot be null.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("POST",
-                    $"/products",
+                    $"{Constants.ApiEndpoint}/products",
                     JsonConvert.SerializeObject(new { product = CleanItem(product) }));
                 if (response.StatusCode != HttpStatusCode.Created)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
@@ -194,7 +194,7 @@ namespace Tipi.Tools.Payments
                     throw new ArgumentNullException("The Subscription cannot be null.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("POST",
-                    $"/products",
+                    $"{Constants.ApiEndpoint}/products",
                     JsonConvert.SerializeObject(new { product = CleanItem(subscription) }));
                 if (response.StatusCode != HttpStatusCode.Created)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
@@ -232,7 +232,7 @@ namespace Tipi.Tools.Payments
                     throw new ArgumentNullException("The Item Id cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("DELETE",
-                    $"/products/{id}");
+                    $"{Constants.ApiEndpoint}/products/{id}");
                 if (response.StatusCode != HttpStatusCode.OK)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
@@ -262,7 +262,7 @@ namespace Tipi.Tools.Payments
                     throw new ArgumentNullException("The Item Id cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("DELETE",
-                    $"/subscriptions/{activeId}");
+                    $"{Constants.ApiEndpoint}/subscriptions/{activeId}");
                 if (response.StatusCode != HttpStatusCode.OK)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
@@ -305,7 +305,7 @@ namespace Tipi.Tools.Payments
                     throw new ArgumentNullException("The checkout Id cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("GET",
-                    $"/checkouts/{checkoutId}");
+                    $"{Constants.ApiEndpoint}/checkouts/{checkoutId}");
                 if (response.StatusCode != HttpStatusCode.OK)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
@@ -318,6 +318,33 @@ namespace Tipi.Tools.Payments
             {
                 throw new ApplicationException("An error ocurred creating the checkout", e);
             }
+        }
+
+        /// <summary>
+        /// Gets the information of a payment method used on a checkout, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#get-payment-method-async">See More</see>.
+        /// </summary>
+        /// <remarks>
+        /// Gets the information of a payment method by it's checkout.
+        /// </remarks>
+        /// <param name="checkoutId">Id of the checkout you need to retrieve the payment method from</param>
+        /// <returns>
+        /// <c>PaymentMethod</c> object containing the information of your payment method
+        /// </returns>
+        public async Task<PaymentMethod> GetPaymentMethodAsync(string checkoutId)
+        {
+            if (string.IsNullOrEmpty(checkoutId))
+                throw new ArgumentNullException("The Cehckout Id cannot be null or empty.");
+            using var requestHandler = new HttpRequestHandler(_headers);
+            var response = await requestHandler.ExecuteAsync("GET",
+                $"{Constants.ApiEndpoint}/checkouts/{checkoutId}");
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
+
+            var payment = JsonConvert.DeserializeObject<RecurrentePaymentMethod>(response.Body);
+            if (payment == null)
+                throw new NullReferenceException("The Checkout Response is null.");
+            return new PaymentMethod(payment.id, payment.card.last4, payment.card.expiration_month, payment.card.expiration_year, payment.card.network);
         }
 
         /// <summary>
@@ -336,7 +363,7 @@ namespace Tipi.Tools.Payments
                     throw new ArgumentNullException("The Product Id cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("GET",
-                    $"/products/{productId}");
+                    $"{Constants.ApiEndpoint}/products/{productId}");
                 if (response.StatusCode != HttpStatusCode.OK)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
@@ -367,7 +394,7 @@ namespace Tipi.Tools.Payments
                     throw new ArgumentNullException("The Subscription Id cannot be null or empty.");
                 using var requestHandler = new HttpRequestHandler(_headers);
                 var response = await requestHandler.ExecuteAsync("GET",
-                    $"/products/{subscriptionId}");
+                    $"{Constants.ApiEndpoint}/products/{subscriptionId}");
                 if (response.StatusCode != HttpStatusCode.OK)
                     throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 

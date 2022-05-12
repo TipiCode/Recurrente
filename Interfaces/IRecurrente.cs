@@ -127,5 +127,17 @@ namespace Tipi.Tools.Payments.Interfaces
         /// <c>ActiveSubscription</c> object containing the information of your subscription
         /// </returns>
         Task<ActiveSubscription> GetActiveSubscriptionAsync(string activeId);
+        /// <summary>
+        /// Gets the information of a payment method used on a checkout, 
+        /// <see href="https://docs.codingtipi.com/docs/toolkit/recurrente/methods#get-payment-method-async">See More</see>.
+        /// </summary>
+        /// <remarks>
+        /// Gets the information of a payment method by it's checkout.
+        /// </remarks>
+        /// <param name="checkoutId">Id of the checkout you need to retrieve the payment method from</param>
+        /// <returns>
+        /// <c>PaymentMethod</c> object containing the information of your payment method
+        /// </returns>
+        Task<PaymentMethod> GetPaymentMethodAsync(string checkoutId);
     }
 }
