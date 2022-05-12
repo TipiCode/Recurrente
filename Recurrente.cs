@@ -341,10 +341,12 @@ namespace Tipi.Tools.Payments
             if (response.StatusCode != HttpStatusCode.OK)
                 throw new Exception($"An error ocurred with the API comunication, RESPONSE: {response.Body}");
 
-            var payment = JsonConvert.DeserializeObject<RecurrentePaymentMethod>(response.Body);
+            var payment = JsonConvert.DeserializeObject<RecurrentePaidCheckout>(response.Body);
             if (payment == null)
                 throw new NullReferenceException("The Checkout Response is null.");
-            return new PaymentMethod(payment.id, payment.card.last4, payment.card.expiration_month, payment.card.expiration_year, payment.card.network);
+            return new PaymentMethod(payment.payment_method.id, payment.payment_method.card.last4, 
+                payment.payment_method.card.expiration_month, payment.payment_method.card.expiration_year, 
+                payment.payment_method.card.network);
         }
 
         /// <summary>
