@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>Tipi.Tools.Recurrente</PackageId>
+    <Version>1.0.4</Version>
+    <Company>tipi(code)</Company>
+    <Description>.Net Wrapper for the Payment Gateway Recurrente, this wrapper is used to interface directly with Recurrente's API.</Description>
+    <Copyright>© tipicode | all rights reserved</Copyright>
+    <PackageProjectUrl>https://docs.codingtipi.com/docs/toolkit/recurrente</PackageProjectUrl>
+    <PackageIcon>Assets\tipi.png</PackageIcon>
+    <RepositoryUrl>https://github.com/TipiCode/recurrente</RepositoryUrl>
+    <PackageTags>c#;Recurrente;Payment gateway;Payments</PackageTags>
+    <PackageReleaseNotes>Fixes minor issues</PackageReleaseNotes>
+    <NeutralLanguage>en</NeutralLanguage>
+    <AssemblyVersion>1.0.4</AssemblyVersion>
+    <FileVersion>1.0.4</FileVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <Authors>tipi(code)</Authors>
+    <Product>Recurrente</Product>
+    <AssemblyName>Tipi.Tools.Payments</AssemblyName>
+    <RootNamespace>Tipi.Tools.Payments</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Tipi.Tools.HttpRequestHandler" Version="1.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\tipi.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
