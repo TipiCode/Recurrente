@@ -16,18 +16,22 @@ namespace Tipi.Tools.Payments.Models
         /// The 4 last digits of your card.
         /// </summary>
         public string Last4Digits { get; } = default!;
+        
         /// <summary>
         /// The expiration month of your card
         /// </summary>
         public string ExpirationMonth { get; } = default!;
+        
         /// <summary>
         /// The expiration year of your card
         /// </summary>
         public string ExpiratioYear { get; } = default!;
+        
         /// <summary>
         /// Your card Provider
         /// </summary>
         public string Provider { get; } = default!;
+        
         /// <summary>
         /// Constructor to initialize the <c>Card</c> object.
         /// </summary>
