@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>Tipi.Tools.Recurrente</PackageId>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
     <Company>tipi(code)</Company>
     <Description>.Net Wrapper for the Payment Gateway Recurrente, this wrapper is used to interface directly with Recurrente's API.</Description>
     <Copyright>© tipicode | all rights reserved</Copyright>
@@ -16,8 +16,8 @@
     <PackageTags>c#;Recurrente;Payment gateway;Payments</PackageTags>
     <PackageReleaseNotes>Minor fixes</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
-    <AssemblyVersion>1.0.5</AssemblyVersion>
-    <FileVersion>1.0.5</FileVersion>
+    <AssemblyVersion>1.0.6</AssemblyVersion>
+    <FileVersion>1.0.6</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <Authors>tipi(code)</Authors>
