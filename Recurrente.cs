@@ -472,7 +472,7 @@ namespace Tipi.Tools.Payments
                 billing_info_requirement = Enum.GetName(typeof(Requirements), item.BillingInfoRequirement) ?.ToLower(),
                 image_url = item.Image,
                 cancel_url = item.CancelUrl,
-                cancelsuccess_url_url = item.SuccessUrl,
+                success_url = item.SuccessUrl,
                 prices_attributes = new List<dynamic>()
                     {
                         new
@@ -498,7 +498,7 @@ namespace Tipi.Tools.Payments
                 billing_info_requirement = Enum.GetName(typeof(Requirements), item.BillingInfoRequirement)?.ToLower(),
                 image_url = item.Image,
                 cancel_url = item.CancelUrl,
-                cancelsuccess_url_url = item.SuccessUrl,
+                success_url = item.SuccessUrl,
                 prices_attributes = new List<dynamic>()
                     {
                         new
